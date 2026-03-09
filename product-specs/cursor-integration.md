@@ -1,6 +1,12 @@
 # Cursor integration (libra-skills)
 
-Minimal spec for the libra-skills plugin: stop hook → libra-update flow and hook contracts.
+Minimal spec for the libra-skills plugin: session context injection, stop hook → libra-update flow, and hook contracts.
+
+## sessionStart (context injection)
+
+1. When a **new composer conversation** is created, the hook script `libra-session-start.ts` runs.
+2. It outputs `{ "additional_context": "..." }` with a short orientation to project docs (`docs/`, exec-plans, product-specs, DECISIONS) and the libra-update flow.
+3. Cursor adds this to the conversation’s **initial system context**, so the agent sees it from the first turn. No per-prompt injection (beforeSubmitPrompt cannot inject; only block or allow).
 
 ## Stop hook → libra-update
 
@@ -18,4 +24,4 @@ Minimal spec for the libra-skills plugin: stop hook → libra-update flow and ho
 
 ## beforeSubmitPrompt
 
-- Cannot inject context (Cursor API only allows `continue` and `user_message`). The script always returns `{ "continue": true }`. Orientation to `/docs` is provided when the libra-update skill runs or via project rules.
+- Cannot inject context (Cursor API only allows `continue` and `user_message`). The script always returns `{ "continue": true }`. Orientation to `/docs` is provided by **sessionStart** (initial context) and when the libra-update skill runs or via project rules.

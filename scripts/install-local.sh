@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Install libra-skills as a local Cursor plugin (no marketplace).
+# Safe to run multiple times: overwrites the plugin copy and upserts registration.
 # Cursor discovers plugins via ~/.claude/ — we copy the plugin and register it there.
 # See: https://medium.com/@v.tajzich/how-to-write-and-test-cursor-plugins-locally-the-part-the-docs-dont-tell-you-4eee705d7f76
 set -euo pipefail

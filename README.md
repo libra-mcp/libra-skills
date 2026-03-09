@@ -3,7 +3,7 @@
 Cursor plugin that gives any project:
 
 1. **`/init-libra`** — conversational onboarding that scaffolds a `/docs` structure by reading the codebase and asking about vision and domain. Same output as the MCP `init_repo` tool; writes directly to disk (no PR).
-2. **Hooks + `libra-update` skill** — keeps `/docs` current as code evolves. Context before each agent run; doc sync after (cadence-checked stop hook).
+2. **Hooks + `libra-update` skill** — keeps `/docs` current as code evolves. Context injected at session start; doc sync after (cadence-checked stop hook).
 
 No MCP server, no API keys, no config.
 
@@ -31,7 +31,8 @@ Then **restart Cursor** (quit and reopen). The script copies the plugin to `~/.c
 
 ## Hooks
 
-- **beforeSubmitPrompt** — `libra-context.ts`: allows submission (no context injection; Cursor only supports continue/user_message). Orientation to `/docs` is provided by the libra-update skill when it runs.
+- **sessionStart** — `libra-session-start.ts`: injects a short libra/docs orientation into the conversation’s initial system context so every new chat is aware of `docs/`, exec-plans, product-specs, and the libra-update flow.
+- **beforeSubmitPrompt** — `libra-context.ts`: allows submission (no context injection; Cursor only supports continue/user_message).
 - **stop** — `libra-stop.ts`: cadence-checked; when met, sends a follow-up message so the agent runs the **libra-update** skill. State: `.cursor/hooks/state/libra-update.json`.
 - **afterFileEdit** — `libra-autocommit.ts`: opt-in; when `LIBRA_AUTOCOMMIT=1`, runs `git add` and `git commit` for edits under `docs/`.
 
