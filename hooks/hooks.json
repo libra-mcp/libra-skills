@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      {
+        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/scripts/libra-context.ts"
+      }
+    ],
+    "stop": [
+      {
+        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/scripts/libra-stop.ts"
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/scripts/libra-autocommit.ts"
+      }
+    ]
+  }
+}
