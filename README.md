@@ -9,9 +9,19 @@ No MCP server, no API keys, no config.
 
 ## Installation
 
+**From marketplace (when published):**
+
 ```
 /plugin install libra-skills@ctoouli
 ```
+
+**Local development (no marketplace):** Cursor doesn’t have a “load from folder” option. To test before publishing, run from the repo root:
+
+```bash
+./scripts/install-local.sh
+```
+
+Then **restart Cursor** (quit and reopen). The script copies the plugin to `~/.cursor/plugins/libra-skills` and registers it in `~/.claude/plugins/installed_plugins.json` and `~/.claude/settings.json`. If your Cursor build has **Settings → Features → “Include third-party Plugins, Skills, and other configs”**, turn it on. ([Details](https://medium.com/@v.tajzich/how-to-write-and-test-cursor-plugins-locally-the-part-the-docs-dont-tell-you-4eee705d7f76))
 
 ## Usage
 
