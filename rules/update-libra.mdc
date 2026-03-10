@@ -1,3 +1,4 @@
+---
 description: Keep the docs folder up to date with meaningful changes, progress, and issues by running the update-libra skill when appropriate.
 alwaysApply: false
 ---
@@ -9,6 +10,7 @@ alwaysApply: false
 1. **When the user asks** to sync docs, update Libra docs, or record changes → run the skill.
 2. **At the end of any conversation**, ask yourself: did this session produce a decision, constraint, architectural choice, feature scope change, or open question that a coding agent would need to build correctly? If yes, run update-libra.
 3. The bar is: **would Cursor build the wrong thing without this being written down?** If so, write it now — don't wait for the user to ask.
+4. Before running, use `git status` to confirm meaningful changes exist outside `docs/` and `.cursor/`.
 
 Do not run on every turn. Run when the user asks, or once at the end of a conversation that changed what the docs should say.
 

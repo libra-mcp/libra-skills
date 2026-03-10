@@ -1,22 +1,31 @@
-# Canonical /docs structure (init_repo parity)
+# Canonical /docs structure (Libra parity)
 
 Output of `/init-libra` and MCP `init_repo` must match. Use this as the single reference.
 
 ```
+AGENTS.md
+ARCHITECTURE.md
+
 docs/
-├── PRODUCT_SENSE.md
-├── DECISIONS.md
-├── decisions/                 (directory; ADR files)
-├── design-docs/
-│   ├── index.md
+├── decisions/
+│   ├── INDEX.md
+│   └── adr-NNN-slug.md
+├── specs/
+│   ├── INDEX.md
+│   └── <feature-slug>.md
+├── design/
+│   ├── INDEX.md
 │   └── core-beliefs.md
-├── product-specs/
-│   └── index.md
-└── exec-plans/
+└── plans/
+    ├── INDEX.md
     ├── active/
-    └── tech-debt-tracker.md
+    │   └── <plan-slug>.md
+    └── completed/
+        └── <plan-slug>.md
 ```
 
-Plus `AGENTS.md` at repo root when not present.
-
-Stubs: use `<!-- TODO: fill in -->` for placeholder content; do not leave blank or hallucinate.
+Conventions:
+- Every doc file includes YAML frontmatter.
+- Cross-links use wiki-style notation: `[[adr-005]]`, `[[spec:auth-flow]]`, `[[design:core-beliefs]]`.
+- Index files are always named `INDEX.md` (caps).
+- If content is unknown, use `<!-- TODO: ... -->` stubs rather than guessing.

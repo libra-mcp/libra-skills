@@ -1,6 +1,6 @@
 ---
 name: update-libra
-description: Syncs project docs (docs/, exec-plans, product-specs, DECISIONS) after meaningful conversations. Use when the user asks to sync docs, or at end of session when the conversation produced decisions, constraints, scope changes, or progress worth recording.
+description: Syncs Libra-style docs (docs/decisions, docs/specs, docs/design, docs/plans) after meaningful conversations. Use when the user asks to sync docs, or at end of session when conversation produced decisions, constraints, scope changes, or progress worth recording.
 ---
 
 # update-libra
@@ -14,7 +14,11 @@ Review the conversation. Identify anything in these categories:
 - Feature scope additions, removals, or pivots
 - Constraints a coding agent must respect
 - Open questions that are unresolved but relevant to upcoming work
-- Exec plan progress (tasks completed, new tasks, phase changes)
+- Plan progress (tasks completed, new tasks, phase changes)
+
+Then check `git status`:
+- If there are no meaningful changes outside `docs/` and `.cursor/`, respond briefly ("Nothing to sync") and stop.
+- If there are meaningful changes, continue.
 
 If nothing in the conversation falls into these categories, respond briefly ("Nothing to sync") and stop.
 
@@ -23,9 +27,9 @@ If nothing in the conversation falls into these categories, respond briefly ("No
 For each doc you plan to update, call `Libra:read_doc` first. Never write a doc without reading it — you will lose existing content.
 
 Always read:
-- `DECISIONS.md` if you're adding or updating any decision
+- `docs/decisions/INDEX.md` if you're adding or updating any decision
 - The specific ADR file if you're superseding an existing one
-- The active exec plan if any tasks changed status
+- `docs/plans/INDEX.md` and active plan files if task status changed
 
 ## Step 3 — Write only what changed
 
@@ -33,35 +37,41 @@ Make surgical edits — do not rewrite unchanged sections. Build the full update
 
 **For new ADRs:**
 - New file at `docs/decisions/adr-NNN-[slug].md` — format: context → options considered → decision → rationale → consequences
-- Update `docs/DECISIONS.md` index table with the new entry
+- Update `docs/decisions/INDEX.md` with the new entry
 - ADR numbers are sequential — check the index for the next number
 
-**For exec plan updates:**
+**For plan updates:**
 - Mark completed tasks `[x]`
 - Add new tasks if scope changed
 - Update phase status if it changed
 
 **For new or updated product specs:**
-- Create or update `docs/product-specs/[feature-name].md`
-- Update `docs/product-specs/index.md`
+- Create or update `docs/specs/[feature-name].md`
+- Update `docs/specs/INDEX.md`
+
+**For design docs:**
+- Update `docs/design/[topic].md` when principles or design rationale changed
+- Keep `docs/design/INDEX.md` in sync
+
+**For plans index updates:**
+- Keep `docs/plans/INDEX.md` as a short map of active/completed plans
+- Do not let indexes become narrative docs
 
 **Doc format:**
 ```
-# [Title]
-
-**Last updated:** [date]
-**Status:** [Draft | Active | Superseded]
-
-## Summary
-One paragraph. What is this? Why does it exist?
-
-## [Relevant sections]
-
-## Open questions
-- [ ] Unresolved questions
+---
+title: "..."
+date: YYYY-MM-DD
+status: ...
+---
 ```
 
-Keep docs under 300 lines. High-signal, short, cross-linked.
+Conventions:
+- Every doc file has frontmatter
+- Cross-link with wiki links: `[[adr-005]]`, `[[spec:auth-flow]]`, `[[design:core-beliefs]]`
+- Keep indexes named `INDEX.md` (caps)
+- Keep docs under 300 lines
+- High-signal, short, cross-linked
 
 ## Rules
 

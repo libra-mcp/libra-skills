@@ -1,13 +1,17 @@
 ---
 name: init-libra
-description: Scaffolds a /docs structure for a project by reading the codebase and asking the developer about vision and domain, then writing Libra doc structure and AGENTS.md directly to disk. Use when the user runs /init-libra or asks to scaffold Libra docs, init project docs, or set up docs structure.
+description: Scaffolds the Libra docs structure for a project by reading the codebase and asking the developer about vision and domain, then writing docs plus root AGENTS.md and ARCHITECTURE.md directly to disk. Use when the user runs /init-libra or asks to scaffold Libra docs, init project docs, or set up docs structure.
 ---
 
 # init-libra
 
-Scaffold a `/docs` structure and `AGENTS.md` for a project. Read the codebase
-first, reason about what you still don't know, ask only those questions, then
-write everything directly to disk. No PR.
+Scaffold a Libra-compliant docs system for a project:
+- root `AGENTS.md`
+- root `ARCHITECTURE.md`
+- `docs/decisions`, `docs/specs`, `docs/design`, `docs/plans`
+
+Read the codebase first, reason about what you still do not know, ask only those
+questions, then write everything directly to disk. No PR.
 
 ---
 
@@ -64,19 +68,23 @@ Do not ask for information you will not use in a specific file.
 
 Write the following structure directly to disk. Do not open a PR.
 ```
+AGENTS.md
+ARCHITECTURE.md
+
 docs/
-├── PRODUCT_SENSE.md
-├── DECISIONS.md
-├── decisions/                 ← directory only; no files required yet
-├── design-docs/
-│   ├── index.md
+├── decisions/
+│   ├── INDEX.md
+│   └── adr-NNN-slug.md        ← optional; only if a real decision exists
+├── specs/
+│   ├── INDEX.md
+│   └── <feature-slug>.md      ← optional; only if a real spec exists
+├── design/
+│   ├── INDEX.md
 │   └── core-beliefs.md
-├── product-specs/
-│   └── index.md
-└── exec-plans/
-    ├── active/                ← directory only; no files required yet
-    └── tech-debt-tracker.md
-AGENTS.md                      ← repo root
+└── plans/
+    ├── INDEX.md
+    ├── active/
+    └── completed/
 ```
 
 ### Content rules
@@ -84,55 +92,41 @@ AGENTS.md                      ← repo root
 **Rule 1: Never hallucinate.** If you don't know something, use a stub. A stub
 is better than plausible-sounding fiction. Mark every stub with `<!-- TODO -->`.
 
-**Rule 2: Populated > stub > blank.** Prefer a real sentence from the codebase
-or the user's answers over a stub. Prefer a stub over an empty section.
+**Rule 2: Populated > stub > blank.** Prefer a real sentence from code or user
+answers over a stub. Prefer a stub over an empty section.
 
-**Rule 3: Short and accurate beats long and vague.** A 3-sentence PRODUCT_SENSE
-that is true is better than 3 paragraphs of marketing language. Coding agents
-read these files — they need signal, not padding.
+**Rule 3: Short and accurate beats long and vague.** A short, concrete summary
+beats generic filler. Coding agents read these files — they need signal, not padding.
+
+**Rule 4: Every doc file has YAML frontmatter.** At minimum include `title`,
+`date`, and `status`.
+
+**Rule 5: Cross-link with wiki links.** Use forms like `[[adr-005]]`,
+`[[spec:auth-flow]]`, `[[design:core-beliefs]]`.
+
+**Rule 6: Index files are always `INDEX.md` (caps).**
 
 ### File specs
 
-#### `PRODUCT_SENSE.md`
-The most important file. A coding agent reads this to understand what it is
-building and why.
+#### `docs/decisions/INDEX.md`
+Short ADR index:
+- one-line folder purpose
+- table columns: Name, Description, Status
+- include "No decisions recorded yet." when empty
 
-Required sections:
-- **What this is** — one paragraph, plain language. What does it do? Who uses it?
-- **The problem it solves** — what breaks without this product?
-- **What it is NOT** — explicit non-goals; helps agents avoid building the wrong thing
-- **Current phase** — exploration / active build / post-launch, and what that means
+#### `docs/specs/INDEX.md`
+Short spec index:
+- one-line folder purpose
+- table columns: Name, Description, Status
+- include "No specs recorded yet." when empty
 
-Good example of a "What this is" section:
-> Libra is a context layer for product development. It captures decisions from
-> AI chat conversations and writes them as structured markdown docs into a GitHub
-> repo. AI coding agents (Cursor, Claude Code) then read those docs as native
-> project context. Libra doesn't write code — it makes sure coding agents have
-> the right context to write the right code.
+#### `docs/design/INDEX.md`
+Short design index:
+- one-line folder purpose
+- table columns: Name, Description, Status
+- include `core-beliefs.md` entry
 
-Bad example (stub masquerading as content — do not produce this):
-> This project is a modern solution for developers who want to improve their
-> workflow using cutting-edge AI technology.
-
-If you cannot write a good "What this is" in one paragraph, mark it TODO and
-move on. Do not fill space with generic language.
-
-#### `DECISIONS.md`
-ADR index. If no ADRs exist yet, write:
-```markdown
-# Architecture Decision Log
-
-No decisions recorded yet. When an architectural decision is made, add an ADR
-file under `docs/decisions/` and link it here.
-
-Format: context → options considered → decision → rationale → consequences.
-
-| ADR | Title | Status |
-|-----|-------|--------|
-| (none yet) | | |
-```
-
-#### `design-docs/core-beliefs.md`
+#### `docs/design/core-beliefs.md`
 Guiding principles — the decision filters that break ties when two approaches
 conflict. These are not aspirational values.
 
@@ -143,9 +137,21 @@ Otherwise stub the whole file with:
 is built. These should be specific enough to break a tie, not generic values. -->
 ```
 
-#### `exec-plans/tech-debt-tracker.md`
-Known debt that isn't urgent. If you can infer items from the codebase (e.g.
-hardcoded config, missing tests, TODO comments), list them. Otherwise stub.
+#### `docs/plans/INDEX.md`
+Short plan index:
+- one-line folder purpose
+- table columns: Name, Description, Status
+- include "No active plans." if none are present
+
+#### `ARCHITECTURE.md` (repo root)
+Scaffold section headers only (stubs allowed):
+- System overview
+- Major components
+- Data flow
+- Integrations
+- Operational concerns
+
+Use short `<!-- TODO -->` stubs where unknown.
 
 #### `AGENTS.md` (repo root)
 This is the orientation file for coding agents. It must answer four questions:
@@ -154,7 +160,7 @@ This is the orientation file for coding agents. It must answer four questions:
 2. **What should I read before making any change?** — table of file → purpose
 3. **What must I never do?** — 3–5 hard constraints visible from the codebase
    or stated by the developer
-4. **Where is the current work?** — point to exec-plans/active/ or equivalent
+4. **Where is the current work?** — point to `docs/plans/active/` or equivalent
 
 Structure:
 ```markdown
@@ -162,29 +168,51 @@ Structure:
 
 You are working on **[project name]** — [one-liner].
 
-## Read first
+## Documentation structure
 
-| You're about to... | Read this first |
-|--------------------|-----------------|
-| Understand the product | docs/PRODUCT_SENSE.md |
-| Make an architectural decision | docs/DECISIONS.md |
-| Pick up a task | docs/exec-plans/active/ |
-| [add more based on project shape] | |
+All project docs live in `docs/`. Read → decide → write.
+
+| You want to...               | Look here                          |
+|------------------------------|------------------------------------|
+| Understand architecture      | `ARCHITECTURE.md` (repo root)      |
+| Check existing decisions     | `docs/decisions/INDEX.md`          |
+| Read feature scope           | `docs/specs/INDEX.md`              |
+| Understand design principles | `docs/design/INDEX.md`             |
+| Check execution status       | `docs/plans/INDEX.md`              |
 
 ## Stack
 
 [Language, framework, key dependencies — 3–5 lines max]
 
-## What NOT to do
+## When to CREATE a decision record
 
-- [Hard constraint 1 — infer from code or stated by user]
-- [Hard constraint 2]
-- [Hard constraint 3]
-<!-- TODO: add constraints specific to this project -->
+Create an ADR in `docs/decisions/` when:
+- Choosing between 2+ valid technical approaches
+- Adopting a new library, service, or architecture pattern
+- Changing existing architecture or team conventions
+- Making a tradeoff future developers must understand
+
+## When NOT to create a decision record
+
+Skip ADRs for:
+- Minor bug fixes/refactors
+- Routine version bumps without architectural impact
+- Implementation details inside an existing ADR's direction
+- Routine maintenance
+
+## When to CREATE or UPDATE a spec
+
+Create/update a spec in `docs/specs/` when:
+- Scoping a new feature or significant behavior change
+- Requirements change during implementation
+- Out-of-scope boundaries must be explicit
 
 ## Conventions
 
-<!-- TODO: fill in coding conventions, file structure rules, naming patterns -->
+- Read existing docs before writing new docs (start at INDEX files)
+- Keep docs under 300 lines
+- Use wiki links (`[[adr-005]]`, `[[spec:auth-flow]]`)
+- Require frontmatter in every doc
 ```
 
 ---
@@ -193,11 +221,13 @@ You are working on **[project name]** — [one-liner].
 
 Before reporting to the user, re-read every file you wrote and check:
 
-- [ ] Does PRODUCT_SENSE.md describe a real, specific product — or generic filler?
+- [ ] Do root context files (`AGENTS.md`, `ARCHITECTURE.md`) contain concrete information and not generic filler?
 - [ ] Does AGENTS.md answer all four orientation questions?
 - [ ] Is every unknown section marked `<!-- TODO -->` rather than left blank or
       filled with plausible fiction?
 - [ ] Are there any contradictions between files?
+- [ ] Does every doc include frontmatter?
+- [ ] Are all index files named `INDEX.md` (caps)?
 
 Fix anything that fails before proceeding.
 
