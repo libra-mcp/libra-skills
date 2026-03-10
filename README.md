@@ -1,17 +1,8 @@
 # libra-skills
 
-Libra workflows for coding agents across Cursor and Claude Code.
+The context layer for your agents.
 
-Core capabilities:
-
-1. **Init docs context** via `init-libra`:
-   - reads the codebase,
-   - asks only missing context questions,
-   - scaffolds `docs/` plus root `AGENTS.md` and `ARCHITECTURE.md`.
-2. **Keep docs synced** via `update-libra`:
-   - captures decisions, scope changes, constraints, progress, and open questions,
-   - updates only what changed in `docs/`,
-   - preserves Libra conventions (`decisions/`, `specs/`, `design/`, `plans/`, frontmatter, `INDEX.md`).
+Turns AI chat decisions into structured repo docs so Cursor and Claude Code always start with the right context. Scaffolds `docs/`, `AGENTS.md`, and `ARCHITECTURE.md` with `init-libra`, then keeps specs, decisions, design notes, and plans in sync with `update-libra`.
 
 ## Installation
 
