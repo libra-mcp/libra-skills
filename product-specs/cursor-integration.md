@@ -1,20 +1,18 @@
 # Cursor integration (libra-skills)
 
-Minimal spec for the libra-skills plugin: session context injection, stop hook → libra-update flow, and hook contracts.
+Minimal spec for the libra-skills plugin: rules-driven orientation and update-libra (in-stream), and hook contracts.
 
-## sessionStart (context injection)
+## Rules (orientation + when to run update-libra)
 
-1. When a **new composer conversation** is created, the hook script `libra-session-start.ts` runs.
-2. It outputs `{ "additional_context": "..." }` with a short orientation to project docs (`docs/`, exec-plans, product-specs, DECISIONS) and the libra-update flow.
-3. Cursor adds this to the conversation’s **initial system context**, so the agent sees it from the first turn. No per-prompt injection (beforeSubmitPrompt cannot inject; only block or allow).
+1. **Docs rule** (`rules/libra-docs.mdc`, alwaysApply): project docs orientation (Libra-style docs under `docs/`, exec-plans, product-specs, DECISIONS) and guidance on how to use them (skim relevant docs early, use them to guide behavior and language, surface gaps).
+2. **Update-libra rule** (`rules/update-libra.mdc`, alwaysApply): when to run the update-libra skill in-stream (user asks, or end of session only if there are meaningful changes, determined via `git status`).
 
-## Stop hook → libra-update
+## Rule-driven update-libra (in-stream)
 
-1. On **stop** (agent loop ends), the hook script `libra-stop.ts` runs with CWD = workspace root.
-2. It reads state from `.cursor/hooks/state/libra-update.json` (last run time, turns since last run).
-3. Cadence: when `status === "completed"`, and `turnsSinceLastRun >= LIBRA_UPDATE_MIN_TURNS`, and `minutesSinceLastRun >= LIBRA_UPDATE_MIN_MINUTES`, the script outputs `{ "followup_message": "..." }`.
-4. The follow-up message instructs the agent to run the **libra-update** skill: diff what changed, read relevant docs, update them surgically, and set **isLibraRun** when done.
-5. The libra-update skill writes a marker (e.g. in state or via reply) so the hook does not loop indefinitely. The stop script does not currently read isLibraRun; cadence (turns + time) prevents rapid re-trigger. Future: script could skip follow-up if the last agent reply indicated "Libra docs synced" or a state file was updated.
+1. There is **no stop hook**. Doc sync is triggered by the **update-libra rule** (`rules/update-libra.mdc`) that runs every time (alwaysApply).
+2. The update-libra rule tells the agent: run the **update-libra** skill **as a continuation of the same conversation** (in-stream), not as a new message. Run it when the user asks to sync docs, or at the end of a session—but **only if there are meaningful changes** (tracked changes outside `docs/`, `exec-plans/`, `product-specs/`, `.cursor/`). The agent checks with `git status` before deciding to run the skill.
+3. The **update-libra** skill (in `skills/update-libra/SKILL.md`) describes when to run and includes a first step: check for meaningful changes; if none, respond briefly and set the isLibraRun marker without editing docs.
+4. This keeps doc sync in the same message stream and avoids a separate followup message. The agent runs the skill when appropriate, guided by the rule and the skill’s “when to run” section.
 
 ## afterFileEdit (opt-in autocommit)
 
@@ -22,6 +20,6 @@ Minimal spec for the libra-skills plugin: session context injection, stop hook �
 - Input: `{ "file_path": "<absolute path>", "edits": [...] }`. If `file_path` is under workspace `docs/`, run `git add` and `git commit -m "docs: libra sync"`.
 - Fail open: any error is ignored so the edit is not blocked.
 
-## beforeSubmitPrompt
+## Hooks (remaining)
 
-- Cannot inject context (Cursor API only allows `continue` and `user_message`). The script always returns `{ "continue": true }`. Orientation to `/docs` is provided by **sessionStart** (initial context) and when the libra-update skill runs or via project rules.
+- Only **afterFileEdit** is used (opt-in autocommit for `docs/`). No sessionStart or beforeSubmitPrompt; orientation comes from the **libra-docs** rule and update-libra guidance comes from the **update-libra** rule.

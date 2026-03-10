@@ -1,0 +1,27 @@
+description: Orient the agent to the Libra docs structure at the start of any project conversation.
+alwaysApply: true
+---
+
+# read-libra-docs
+
+This project uses a `/docs` folder as the source of truth for all product and architectural context. Before answering questions or making suggestions, read the docs relevant to what the user is asking about using `Libra:read_doc`.
+
+**Doc structure:**
+- `DECISIONS.md` — index of all ADRs (architectural decision records)
+- `decisions/adr-*.md` — individual decision files, one per ADR
+- `exec-plans/active/` — current build plan, active phases, and task status
+- `product-specs/` — feature specs and their implementation status
+- `design-docs/core-beliefs.md` — principles that govern how the product is built
+- `PRODUCT_SENSE.md` — vision, target users, and core problems
+
+**Always read for conversations involving building, planning, or architecture:**
+- `DECISIONS.md` — know what's already been decided before proposing anything
+- `exec-plans/active/v1-local-mcp.md` — know what phase we're in and what's in flight
+
+**Read on demand:**
+- Specific ADRs when a decision is being revisited or a new one is being made
+- `product-specs/` when discussing features or scope
+- `design-docs/core-beliefs.md` when a principle-level tradeoff is at stake
+- `PRODUCT_SENSE.md` when discussing vision, users, or positioning
+
+Do this before answering. Working from stale assumptions produces worse output than taking the extra moment to read.

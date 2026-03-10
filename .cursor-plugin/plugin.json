@@ -2,7 +2,7 @@
   "name": "libra-skills",
   "displayName": "Libra Skills",
   "version": "1.0.0",
-  "description": "Cursor-native Libra: /init-libra scaffolds /docs and AGENTS.md; stop hook + libra-update skill keep docs in sync. No MCP, no API keys.",
+  "description": "Cursor-native Libra: /init-libra scaffolds /docs and AGENTS.md; rules provide docs orientation and update-libra skill (in-stream when meaningful changes). No session/stop hooks. No MCP, no API keys.",
   "author": {
     "name": "ctoouli",
     "email": ""
@@ -12,5 +12,6 @@
   "license": "MIT",
   "keywords": ["libra", "docs", "onboarding", "agent-memory", "hooks"],
   "skills": "./skills/",
+  "rules": "./rules/",
   "hooks": "./hooks/hooks.json"
 }

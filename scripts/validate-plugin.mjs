@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Minimal validation for single-plugin repo (libra-skills).
- * Checks: plugin.json at root, frontmatter on skills (name, description), referenced paths exist.
+ * Checks: plugin.json at root, frontmatter on skills and rules (name/description), referenced paths exist.
  */
 
 import { readFileSync, existsSync } from "node:fs";
@@ -44,13 +44,27 @@ if (!existsSync(manifestPath)) {
     const skillsPath = manifest.skills ? resolve(root, manifest.skills) : resolve(root, "skills");
     if (existsSync(skillsPath)) {
       const initLibra = resolve(skillsPath, "init-libra/SKILL.md");
-      const libraUpdate = resolve(skillsPath, "libra-update/SKILL.md");
-      for (const p of [initLibra, libraUpdate]) {
+      const updateLibra = resolve(skillsPath, "update-libra/SKILL.md");
+      for (const p of [initLibra, updateLibra]) {
         if (existsSync(p)) {
           const content = readFileSync(p, "utf-8");
           const fm = parseFrontmatter(content);
           if (!fm || !fm.name || !fm.description) {
             errors.push("Skill missing name/description frontmatter: " + p);
+          }
+        }
+      }
+    }
+    const rulesPath = manifest.rules ? resolve(root, manifest.rules) : null;
+    if (rulesPath && existsSync(rulesPath)) {
+      const libraDocs = resolve(rulesPath, "libra-docs.mdc");
+      const updateLibraRule = resolve(rulesPath, "update-libra.mdc");
+      for (const p of [libraDocs, updateLibraRule]) {
+        if (existsSync(p)) {
+          const content = readFileSync(p, "utf-8");
+          const fm = parseFrontmatter(content);
+          if (!fm || !fm.description) {
+            errors.push("Rule missing description frontmatter: " + p);
           }
         }
       }
