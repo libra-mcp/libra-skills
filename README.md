@@ -17,28 +17,37 @@ Core capabilities:
 
 ### Claude Code
 
-Marketplace install:
+Add the marketplace to Claude Code (run inside an active `claude` CLI session):
 
 ```text
 /plugin marketplace add libra-mcp/libra-skills
+```
+
+Install the plugin:
+
+```text
 /plugin install libra-skills@libra-mcp
 ```
 
-Local plugin testing:
+Restart Claude Code, then run:
 
-```bash
-claude --plugin-dir ./libra-skills
+```text
+/libra-skills:init-libra
 ```
 
 ### Cursor
 
-Local development install from repo root:
+Local development install from repo root (temporary until `libra-skills` is available in the Cursor plugin marketplace):
 
 ```bash
 ./scripts/install-local.sh
 ```
 
-Then restart Cursor (full quit/reopen).
+Restart Cursor (full quit/reopen), then run:
+
+```text
+/init-libra
+```
 
 ## Usage
 
@@ -54,11 +63,6 @@ Then restart Cursor (full quit/reopen).
 
 ## Rules and hooks behavior
 
-### Cursor (rules-first)
-
-- `rules/libra-docs.mdc`: docs orientation (always-on)
-- `rules/update-libra.mdc`: when to run docs sync (ask-triggered or session-end with meaningful changes)
-
 ### Claude Code (hybrid hooks + skills)
 
 - `SessionStart` hook reminder: orient on Libra docs before planning/building
@@ -66,6 +70,11 @@ Then restart Cursor (full quit/reopen).
 - `SessionEnd` hook reminder/check: nudge docs sync before finishing
 
 In Claude Code v1, hooks are lightweight nudges/checks and do not force doc writes.
+
+### Cursor (rules-first)
+
+- `rules/libra-docs.mdc`: docs orientation (always-on)
+- `rules/update-libra.mdc`: when to run docs sync (ask-triggered or session-end with meaningful changes)
 
 ## License
 
