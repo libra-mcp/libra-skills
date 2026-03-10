@@ -1,0 +1,16 @@
+{
+  "name": "libra-mcp",
+  "owner": {
+    "name": "libra-mcp"
+  },
+  "metadata": {
+    "description": "Libra plugins and skills for structured project docs context."
+  },
+  "plugins": [
+    {
+      "name": "libra-skills",
+      "source": "./",
+      "description": "Init and maintain Libra docs workflows in Claude Code."
+    }
+  ]
+}

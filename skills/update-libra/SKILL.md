@@ -17,14 +17,14 @@ Review the conversation. Identify anything in these categories:
 - Plan progress (tasks completed, new tasks, phase changes)
 
 Then check `git status`:
-- If there are no meaningful changes outside `docs/` and `.cursor/`, respond briefly ("Nothing to sync") and stop.
+- If there are no meaningful changes outside `docs/`, `.cursor/`, and `.claude/`, respond briefly ("Nothing to sync") and stop.
 - If there are meaningful changes, continue.
 
 If nothing in the conversation falls into these categories, respond briefly ("Nothing to sync") and stop.
 
 ## Step 2 — Read before writing
 
-For each doc you plan to update, call `Libra:read_doc` first. Never write a doc without reading it — you will lose existing content.
+For each doc you plan to update, read it first with your available file-read tool. Never write a doc without reading it — you will lose existing content.
 
 Always read:
 - `docs/decisions/INDEX.md` if you're adding or updating any decision

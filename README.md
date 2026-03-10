@@ -1,35 +1,71 @@
 # libra-skills
 
-Cursor plugin that gives any project:
+Libra workflows for coding agents across Cursor and Claude Code.
 
-1. **`/init-libra`** — conversational onboarding that scaffolds a `/docs` structure by reading the codebase and asking about vision and domain. Same output as the MCP `init_repo` tool; writes directly to disk (no PR).
-2. **Rules + `update-libra` skill** — keeps `/docs` current as code evolves. A **docs rule** (always on) gives project docs orientation, and an **update-libra rule** (always on) tells the agent when to run the update-libra skill **in-stream** (same conversation): when the user asks, or at end of session **only if** there are meaningful changes (tracked changes outside `docs/`, `.cursor/`). The skill follows Libra's docs conventions (`decisions/`, `specs/`, `design/`, `plans/`, frontmatter, and `INDEX.md`).
+Core capabilities:
+
+1. **Init docs context** via `init-libra`:
+   - reads the codebase,
+   - asks only missing context questions,
+   - scaffolds `docs/` plus root `AGENTS.md` and `ARCHITECTURE.md`.
+2. **Keep docs synced** via `update-libra`:
+   - captures decisions, scope changes, constraints, progress, and open questions,
+   - updates only what changed in `docs/`,
+   - preserves Libra conventions (`decisions/`, `specs/`, `design/`, `plans/`, frontmatter, `INDEX.md`).
 
 ## Installation
 
-**From marketplace (when published):**
+### Claude Code
 
-```
+Marketplace install:
+
+```text
+/plugin marketplace add libra-mcp/libra-skills
 /plugin install libra-skills@libra-mcp
 ```
 
-**Local development (no marketplace):** Cursor doesn’t have a “load from folder” option. To test before publishing, run from the repo root:
+Local plugin testing:
+
+```bash
+claude --plugin-dir ./libra-skills
+```
+
+### Cursor
+
+Local development install from repo root:
 
 ```bash
 ./scripts/install-local.sh
 ```
 
-Then **restart Cursor** (quit and reopen). The script copies the plugin to `~/.cursor/plugins/libra-skills` and registers it in `~/.claude/plugins/installed_plugins.json` and `~/.claude/settings.json`. If your Cursor build has **Settings → Features → “Include third-party Plugins, Skills, and other configs”**, turn it on. ([Details](https://medium.com/@v.tajzich/how-to-write-and-test-cursor-plugins-locally-the-part-the-docs-dont-tell-you-4eee705d7f76))
+Then restart Cursor (full quit/reopen).
 
 ## Usage
 
-1. Run **`/init-libra`** once to scaffold `docs/` plus root `AGENTS.md` and `ARCHITECTURE.md`.
-2. Use the agent as usual; the **update-libra rule** will prompt the agent to run the **update-libra** skill in-stream when there are meaningful changes to record (or when you ask to sync docs).
+### Claude Code commands (v1)
 
-## Rules
+- `/libra-skills:init-libra`
+- `/libra-skills:update-libra`
 
-- **`rules/libra-docs.mdc`** (always on): project docs orientation and how to use Libra docs during a conversation (what lives under `docs/decisions`, `docs/specs`, `docs/design`, `docs/plans`; skim relevant pieces early; use docs to guide behavior and language).
-- **`rules/update-libra.mdc`** (always on): when to run the update-libra skill **in-stream** (when the user asks or at end of session, only if there are meaningful changes; checks `git status` to decide).
+### Cursor commands
+
+- `/init-libra`
+- `update-libra` is run in-stream when prompted by rules or when explicitly requested
+
+## Rules and hooks behavior
+
+### Cursor (rules-first)
+
+- `rules/libra-docs.mdc`: docs orientation (always-on)
+- `rules/update-libra.mdc`: when to run docs sync (ask-triggered or session-end with meaningful changes)
+
+### Claude Code (hybrid hooks + skills)
+
+- `SessionStart` hook reminder: orient on Libra docs before planning/building
+- `TaskCompleted` hook reminder/check: nudge docs sync when meaningful non-doc changes exist
+- `SessionEnd` hook reminder/check: nudge docs sync before finishing
+
+In Claude Code v1, hooks are lightweight nudges/checks and do not force doc writes.
 
 ## License
 

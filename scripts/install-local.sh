@@ -16,7 +16,7 @@ CLAUDE_SETTINGS="$HOME/.claude/settings.json"
 # 1. Copy plugin files
 rm -rf "$TARGET"
 mkdir -p "$TARGET"
-for dir in .cursor-plugin hooks skills rules; do
+for dir in .cursor-plugin .claude-plugin hooks skills rules scripts; do
   [[ -d "$REPO_ROOT/$dir" ]] && cp -R "$REPO_ROOT/$dir" "$TARGET/"
 done
 

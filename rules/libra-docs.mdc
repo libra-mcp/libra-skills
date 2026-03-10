@@ -5,7 +5,7 @@ alwaysApply: true
 
 # read-libra-docs
 
-This project uses a `/docs` folder as the source of truth for all product and architectural context. Before answering questions or making suggestions, read the docs relevant to what the user is asking about using `Libra:read_doc`.
+This project uses a `/docs` folder as the source of truth for all product and architectural context. Before answering questions or making suggestions, read the docs relevant to what the user is asking about using your available file-read tools.
 
 **Doc structure:**
 - `decisions/INDEX.md` — ADR index (architectural decision records)
