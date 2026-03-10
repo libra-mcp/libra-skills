@@ -2,7 +2,30 @@
 
 The context layer for your agents.
 
-Turns AI chat decisions into structured repo docs so Cursor and Claude Code always start with the right context. Scaffolds `docs/`, `AGENTS.md`, and `ARCHITECTURE.md` with `init-libra`, then keeps specs, decisions, design notes, and plans in sync with `update-libra`.
+Turns AI chat decisions into structured repo docs so Cursor and Claude Code always start with the right context. `init-libra` scaffolds the full structure; `update-libra` keeps it in sync.
+```
+AGENTS.md
+ARCHITECTURE.md
+
+docs/
+├── decisions/
+│   ├── INDEX.md
+│   └── adr-NNN-slug.md
+├── specs/
+│   ├── INDEX.md
+│   └── <feature-slug>.md
+├── design/
+│   ├── INDEX.md
+│   └── core-beliefs.md
+└── plans/
+    ├── INDEX.md
+    ├── active/
+    │   └── <plan-slug>.md
+    └── completed/
+        └── <plan-slug>.md
+```
+
+Every doc includes YAML frontmatter. Cross-links use wiki-style notation: `[[adr-005]]`, `[[spec:auth-flow]]`. Index files are always `INDEX.md`.
 
 ## Installation
 
