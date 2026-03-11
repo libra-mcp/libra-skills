@@ -1,4 +1,5 @@
 ---
+name: update-libra
 description: Keep the docs folder up to date with meaningful changes, progress, and issues by running the update-libra skill when appropriate.
 alwaysApply: false
 ---

@@ -1,4 +1,5 @@
 ---
+name: libra-docs
 description: Orient the agent to the Libra docs structure at the start of any project conversation.
 alwaysApply: true
 ---
